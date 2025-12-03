@@ -1,0 +1,14 @@
+{
+    "name": "MilitaryNerfing",
+    "version": "1.0.0",
+    "title": "Military Rebalance",
+    "author": "garrotte",
+    "description": "Military Balance",
+    "factorio_version": "2.0",
+    "dependencies": ["base >= 2.0.68",
+      "? bobwarfare",
+      "? bobplates",
+      "? bobgreenhouse",
+      "? boblogistics"
+    ]
+  }
