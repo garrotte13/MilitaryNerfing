@@ -1,10 +1,11 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.0
-Date: 2025-12-03
+Date: 2025-12-06
   Info:
     - Fixing piercing ammo recipe disbalance introduced in Factorio2.0
-    - Fixing rockets ammo reccipe disbalance introduced in Factorio2.0 - for Bob's Warfare vanilla ammo was only made hidden
+    - Fixing rockets ammo reccipe disbalance introduced in Factorio2.0 - for Bob's Warfare vanilla rockets ammo has been hidden
     - Bob greenhouses don't cheat with abundant free energy. Required water greatly increased (hope you don't get it from free offshore pumps).
       In the very early game a smart player should switch energy supply between greenhouses and electric labs/electrolysis (till steam engines)
     - Bob MCI steel plates recipe made less cheating, but still softer comparing to vanilla if cheap still is On
-    - Default underground pipes and belts are offered to be shorter to be in line with the principle of mass conservation
+    - BobLogistics default underground pipes and belts are offered to be shorter to be in line with the principle of mass conservation
+    - Fixed Bob MCI liquid fuel cheat recipe
