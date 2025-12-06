@@ -78,6 +78,28 @@ if mods["bobplates"] then
             component.amount = 20
         end
     end
+
+
+end
+
+r = data.raw.recipe["coal-liquefaction"]
+if r then
+    for i, component in pairs(r.ingredients) do
+        if component.name == "steam" then
+            component.minimum_temperature = 385
+        end
+    end
+end
+
+r = data.raw.recipe["bob-carbon-dioxide-oil-processing"]    -- make it worth it
+if r then
+    for i, component in pairs(r.ingredients) do
+        if component.name == "crude-oil" then
+            component.amount = 75
+        end
+    end
+    r.energy_required = 6
+    r.emissions_multiplier = 0.7
 end
 
 data.raw["gun"]["bob-tank-artillery-1"].movement_slow_down_factor = 0.3
