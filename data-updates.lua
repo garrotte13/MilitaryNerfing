@@ -95,12 +95,29 @@ r = data.raw.recipe["bob-carbon-dioxide-oil-processing"]    -- make it worth it
 if r then
     for i, component in pairs(r.ingredients) do
         if component.name == "crude-oil" then
-            component.amount = 75
+            component.amount = 80
         end
     end
     r.energy_required = 6
     r.emissions_multiplier = 0.7
 end
+
+r = data.raw.recipe["bob-carbon-from-wood"]
+if r then
+    r.energy_required = 8
+    for i, component in pairs(r.ingredients) do
+        if component.name == "wood" then
+            component.amount = 5
+        end
+    end
+    for i, component in pairs(r.results) do
+        if component.name == "bob-carbon" then
+            component.amount = 2
+        end
+    end
+
+end
+
 
 data.raw["gun"]["bob-tank-artillery-1"].movement_slow_down_factor = 0.3
 data.raw["gun"]["bob-tank-artillery-1"].movement_slow_down_factor = 70

@@ -11,3 +11,4 @@ Date: 2025-12-06
     - BobLogistics default underground pipes and belts are offered to be shorter to be in line with the principle of mass conservation
     - Fixed Bob MCI liquid fuel cheat recipe
     - Bob Revamp CO2 mediated advanced oil processing made more valuable
+    - Bob MCI carbon wood recipe became less efficient
