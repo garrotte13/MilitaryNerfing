@@ -40,12 +40,12 @@ end
 if mods["bobplates"] and settings.startup["bobmods-plates-cheapersteel"] then --fixing steel recipe balance slightly away from cheating
     r = data.raw.recipe["steel-plate"]
     if settings.startup["bobmods-plates-cheapersteel"].value then
-        r.energy_required = 19.2                                                -- it must be always 3.2 per iron-plate
+        r.energy_required = 16                                                -- it must be always 3.2 per iron-plate
         for i, component in pairs(r.ingredients) do
             if component.name == "iron-plate" then
-                component.amount = 6
+                component.amount = 5
             elseif component.name == "bob-oxygen"  then
-                component.amount = 30                                       -- less oxygen. Asked cheap and we do pay for water and don't void gases!
+                component.amount = 20                                       -- less oxygen. Asked cheap and we do pay for water and don't void gases!
             end
         end
         for i, component in pairs(r.results) do
@@ -53,11 +53,16 @@ if mods["bobplates"] and settings.startup["bobmods-plates-cheapersteel"] then --
                 component.amount = 2
             end
         end
-    else
+    else                     -- player asked to make it NOT cheap
         if r.results then
+            for i, component in pairs(r.ingredients) do
+                if component.name == "bob-oxygen" then
+                    component.amount = 25
+                end
+            end
             for i, component in pairs(r.results) do
                 if component.name == "steel-plate" then
-                    component.amount = 1                    -- player asked to make it NOT cheap
+                    component.amount = 1
                 end
             end
         end
@@ -95,7 +100,7 @@ r = data.raw.recipe["bob-carbon-dioxide-oil-processing"]    -- make it worth it
 if r then
     for i, component in pairs(r.ingredients) do
         if component.name == "crude-oil" then
-            component.amount = 80
+            component.amount = 75
         end
     end
     r.energy_required = 6
@@ -104,10 +109,10 @@ end
 
 r = data.raw.recipe["bob-carbon-from-wood"]
 if r then
-    r.energy_required = 8
+    r.energy_required = 11.2
     for i, component in pairs(r.ingredients) do
         if component.name == "wood" then
-            component.amount = 5
+            component.amount = 7
         end
     end
     for i, component in pairs(r.results) do
@@ -115,8 +120,25 @@ if r then
             component.amount = 2
         end
     end
-
 end
+
+r = data.raw.recipe["bob-resin-wood"]
+if r then
+    for i, component in pairs(r.ingredients) do
+        if component.name == "wood" then
+            component.amount = 2
+        end
+    end
+end
+r = data.raw.recipe["bob-resin-oil"]
+if r then
+    for i, component in pairs(r.results) do
+        if component.name == "bob-resin" then
+            component.amount = 2
+        end
+    end
+end
+
 
 
 data.raw["gun"]["bob-tank-artillery-1"].movement_slow_down_factor = 0.3
