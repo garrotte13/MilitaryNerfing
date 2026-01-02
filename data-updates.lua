@@ -17,24 +17,37 @@ else
     table.insert(data.raw.recipe["rocket"].ingredients, {type="item", name="advanced-circuit", amount=1})
 end
 
-if mods["bobgreenhouse"] then
+r = data.raw.recipe["bob-basic-greenhouse-cycle"]
+if r then
     r = data.raw.recipe["bob-basic-greenhouse-cycle"]
-    if r.ingredients then
-        for i, component in pairs(r.ingredients) do
-            if component.name == "water" then
-                component.amount = 75
-            end
-        end
-    end
-    r = data.raw.recipe["bob-advanced-greenhouse-cycle"]
     for i, component in pairs(r.ingredients) do
         if component.name == "water" then
             component.amount = 75
         end
     end
-    r = data.raw["assembling-machine"]["bob-greenhouse"]
+    for i, component in pairs(r.results) do
+        if component.name == "wood" then
+            component.amount_max = 14
+        end
+    end
+end
+r = data.raw.recipe["bob-advanced-greenhouse-cycle"]
+if r then
+    for i, component in pairs(r.ingredients) do
+        if component.name == "water" then
+            component.amount = 75
+        end
+    end
+    for i, component in pairs(r.results) do
+        if component.name == "wood" then
+            component.amount_max = 35
+        end
+    end
+end
+r = data.raw["assembling-machine"]["bob-greenhouse"]
+if r then
     r.crafting_speed = 0.5
-    r.energy_usage = "180kW"
+    r.energy_usage = "175kW"
 end
 
 if mods["bobplates"] and settings.startup["bobmods-plates-cheapersteel"] then --fixing steel recipe balance slightly away from cheating
@@ -100,19 +113,26 @@ r = data.raw.recipe["bob-carbon-dioxide-oil-processing"]    -- make it worth it
 if r then
     for i, component in pairs(r.ingredients) do
         if component.name == "crude-oil" then
-            component.amount = 75
+            component.amount = 90
         end
     end
     r.energy_required = 6
     r.emissions_multiplier = 0.7
+    for i, component in pairs(r.results) do
+        if component.name == "light-oil" then
+            component.amount = 55
+        elseif component.name == "heavy-oil"  then
+            component.amount = 45
+        end
+    end
 end
 
 r = data.raw.recipe["bob-carbon-from-wood"]
 if r then
-    r.energy_required = 11.2
+    r.energy_required = 8
     for i, component in pairs(r.ingredients) do
         if component.name == "wood" then
-            component.amount = 7
+            component.amount = 5
         end
     end
     for i, component in pairs(r.results) do
@@ -138,7 +158,14 @@ if r then
         end
     end
 end
-
+r = data.raw.recipe["bob-rtg"]
+if r then
+    for i, component in pairs(r.ingredients) do
+        if component.name == "bob-plutonium-239" then
+            component.amount = 2
+        end
+    end
+end
 
 
 data.raw["gun"]["bob-tank-artillery-1"].movement_slow_down_factor = 0.3

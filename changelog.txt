@@ -13,3 +13,4 @@ Date: 2025-12-06
     - Bob Revamp CO2 mediated advanced oil processing made more valuable
     - Bob MCI carbon wood recipe became less efficient to keep coal useful besides military science
     - Bob MCI resin recipes balance
+    - Doubled Plutonium demands for Bob RTG
