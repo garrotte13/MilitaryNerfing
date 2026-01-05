@@ -3,14 +3,16 @@ Version: 1.0.0
 Date: 2025-12-06
   Info:
     - Fixing piercing ammo recipe disbalance introduced in Factorio2.0
-    - Fixing rockets ammo reccipe disbalance introduced in Factorio2.0 - for Bob's Warfare vanilla rockets ammo has been hidden
+    - Fixing rockets ammo recipe disbalance introduced in Factorio2.0 - for Bob's Warfare vanilla rockets ammo has been hidden
+    - OP free ammo drones with unlimited time have been hidden
     - Coal liquefaction requires higher temperature of steam
-    - Bob greenhouses don't cheat with abundant free energy. Required water greatly increased (hope you don't get it from free offshore pumps).
-      In the very early game a smart player should switch energy supply between greenhouses and electric labs/electrolysis (till steam engines)
+    - Bob greenhouses don't cheat with abundant free energy. Required water greatly increased (hope you don't get it from free offshore pumps)      
     - Bob MCI steel plates recipe made less cheating, but still softer comparing to vanilla if cheap still is On
     - BobLogistics default underground pipes and belts are offered to be shorter to be in line with the principle of mass conservation
     - Fixed Bob MCI liquid fuel cheat recipe
+    - Basic oil processing to have vanilla level of productivity
     - Bob Revamp CO2 mediated advanced oil processing made more valuable
     - Bob MCI carbon wood recipe became less efficient to keep coal useful besides military science
+    - Bob MCI coal-sourced carbon comes with very small amounts of sulfur co-product
     - Bob MCI resin recipes balance
     - Doubled Plutonium demands for Bob RTG
