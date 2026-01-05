@@ -67,24 +67,31 @@ end
 
 if mods["bobplates"] then
     r = data.raw.recipe["bob-liquid-fuel"]
-    r.energy_required = 3
-    for i, component in pairs(r.ingredients) do
-        if component.name == "light-oil" then
-            component.amount = 30
+    if r then
+        r.energy_required = 3
+        for i, component in pairs(r.ingredients) do
+            if component.name == "light-oil" then
+                component.amount = 30
+            end
+        end
+        for i, component in pairs(r.results) do
+            if component.name == "bob-liquid-fuel" then
+                component.amount = 20
+            end
         end
     end
-    for i, component in pairs(r.results) do
-        if component.name == "bob-liquid-fuel" then
-            component.amount = 20
-        end
-    end
-
     r = data.raw.recipe["bob-carbon"]
     if r then
         r.main_product = "bob-carbon"
         table.insert(r.results, {type = "item", name = "sulfur", amount = 1, probability=.05})
     end
-    
+
+    r = data.raw["recipe"]["rocket-fuel"]
+    if data.raw.recipe["bob-liquid-fuel"] then
+        table.insert(r.ingredients, {type = "fluid", name = "bob-liquid-fuel", amount = 10})
+    else
+        table.insert(r.ingredients, {type = "fluid", name = "light-oil", amount = 10})
+    end
 end
 
 

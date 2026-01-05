@@ -10,6 +10,8 @@ Date: 2025-12-06
     - Bob MCI steel plates recipe made less cheating, but still softer comparing to vanilla if cheap still is On
     - BobLogistics default underground pipes and belts are offered to be shorter to be in line with the principle of mass conservation
     - Fixed Bob MCI liquid fuel cheat recipe
+    - Added liquid fuel / light oil to rocket fuel recipe
+    - Restored flamethrower recipe (light+heavy oil instead of raw oil) to 17.59.0 classics
     - Basic oil processing to have vanilla level of productivity
     - Bob Revamp CO2 mediated advanced oil processing made more valuable
     - Bob MCI carbon wood recipe became less efficient to keep coal useful besides military science
