@@ -19,6 +19,23 @@ end
 r.energy_required = 3
 r.results[1].amount = 1
 
+r = data.raw["projectile"]["cannon-projectile"]
+for i, dmg_effect in pairs(r.action.action_delivery.target_effects) do
+    if dmg_effect.type == "damage" and dmg_effect.damage.type == "physical" and dmg_effect.damage.amount == 1000 then
+        dmg_effect.damage.amount = 500
+        r.piercing_damage = 600
+        break
+    end
+end
+r = data.raw["projectile"]["uranium-cannon-projectile"]
+for i, dmg_effect in pairs(r.action.action_delivery.target_effects) do
+    if dmg_effect.type == "damage" and dmg_effect.damage.type == "physical" and dmg_effect.damage.amount == 2000 then
+        dmg_effect.damage.amount = 1000
+        r.piercing_damage = 1320
+        break
+    end
+end
+
 r = data.raw["recipe"]["flamethrower-ammo"]
 local found
 for i, component in pairs(r.ingredients) do

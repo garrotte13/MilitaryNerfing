@@ -4,6 +4,7 @@ Date: 2025-12-06
   Info:
     - Fixing piercing ammo recipe disbalance introduced in Factorio2.0
     - Fixing rockets ammo recipe disbalance introduced in Factorio2.0 - for Bob's Warfare vanilla rockets ammo has been hidden
+    - Halved cannon shell phys dmg, which was quintupled in Factorio2.0
     - OP free ammo drones with unlimited time have been hidden
     - Coal liquefaction requires higher temperature of steam
     - Bob greenhouses don't cheat with abundant free energy. Required water greatly increased (hope you don't get it from free offshore pumps)      
