@@ -22,7 +22,7 @@ if r then
     end
     for i, component in pairs(r.results) do
         if component.name == "wood" then
-            component.amount_max = 35
+            component.amount_max = 40
         end
     end
 end
@@ -83,7 +83,7 @@ if mods["bobplates"] then
     r = data.raw.recipe["bob-carbon"]
     if r then
         r.main_product = "bob-carbon"
-        table.insert(r.results, {type = "item", name = "sulfur", amount = 1, probability=.05})
+        table.insert(r.results, {type = "item", name = "sulfur", amount = 1, probability=.04})
     end
 
     r = data.raw["recipe"]["rocket-fuel"]
