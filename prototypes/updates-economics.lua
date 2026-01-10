@@ -112,6 +112,17 @@ for i, component in pairs(r.results) do
     end
 end
 
+r = data.raw.recipe["bob-oil-processing"]
+if r then
+    for i, component in pairs(r.results) do
+        if component.name == "light-oil" then
+            component.amount = 15
+        elseif component.name == "heavy-oil"  then
+            component.amount = 35
+        end
+    end
+end
+
 r = data.raw.recipe["bob-carbon-dioxide-oil-processing"]    -- make it worth it
 if r then
     for i, component in pairs(r.ingredients) do
