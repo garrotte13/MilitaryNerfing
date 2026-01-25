@@ -22,7 +22,8 @@ if r then
     end
     for i, component in pairs(r.results) do
         if component.name == "wood" then
-            component.amount_max = 40
+            component.amount_max = 35
+            component.amount_min = 15
         end
     end
 end
@@ -158,6 +159,15 @@ if r then
     end
 end
 
+r = data.raw.recipe["bob-limestone"]
+if r then
+    for i, component in pairs(r.results) do
+        if component.name == "bob-carbon-dioxide" then
+            component.amount = 20
+        end
+    end
+end
+
 r = data.raw.recipe["bob-resin-wood"]
 if r then
     for i, component in pairs(r.ingredients) do
@@ -181,4 +191,10 @@ if r then
             component.amount = 2
         end
     end
+end
+
+r = data.raw["resource"]["bob-sulfur"]
+if r then
+    r.minable.fluid_amount = 10
+    r.minable.required_fluid = "steam"
 end
