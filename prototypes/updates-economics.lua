@@ -33,6 +33,16 @@ if r then
     r.energy_usage = "175kW"
 end
 
+r = data.raw.recipe["automation-science-pack"]
+if r then
+    for i, component in pairs(r.ingredients) do
+        if component.name == "bob-basic-circuit-board" then
+            component.name = "copper-cable"
+            component.amount = 3
+        end
+    end
+end
+
 if mods["bobplates"] and settings.startup["bobmods-plates-cheapersteel"] then --fixing steel recipe balance slightly away from cheating
     r = data.raw.recipe["steel-plate"]
     if settings.startup["bobmods-plates-cheapersteel"].value then
