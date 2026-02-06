@@ -50,11 +50,41 @@ if found then
     table.insert(r.ingredients, {type="fluid", name="heavy-oil", amount=50})
 end
 
+local energy
+local energyNum
+for _, shield in pairs(data.raw["energy-shield-equipment"]) do
+    if shield.energy_per_shield then
+        energy = string.match(shield.energy_per_shield, "(%d+)kJ")
+        energyNum = tonumber(energy) * 2
+        shield.energy_per_shield = energyNum .. "kJ"
+    end
+end
+for _, legs in pairs(data.raw["movement-bonus-equipment"]) do
+    legs.movement_bonus = legs.movement_bonus / 2
+    if legs.energy_consumption then
+        energy = string.match(legs.energy_consumption, "(%d+)kW")
+        energyNum = tonumber(energy) * 2.0
+        legs.energy_consumption = energyNum .. "kW"
+    end
+end
 
 
 if mods["bobwarfare"] then
+--[[
+    data.raw["unit"]["bob-robot-plasma-drone"].ai_settings =
+    {
+      allow_destroy_when_commands_fail = true,
+      do_separation = false,
+      path_resolution_modifier = 3,
+      join_attacks = true,
+      allow_try_return_to_spawner = true
+    }
+    data.raw["unit"]["bob-robot-plasma-drone"].affected_by_tiles = true
+    data.raw["unit"]["bob-robot-laser-drone"].affected_by_tiles = true
+    ]]
 
     -- Hiding unlimited ammo forever lasting Bob drones
+    
     data.raw.technology["bob-robot-gun-drones"].hidden = true
     data.raw.technology["bob-robot-laser-drones"].hidden = true
     data.raw.technology["bob-robot-flamethrower-drones"].hidden = true
@@ -63,8 +93,6 @@ if mods["bobwarfare"] then
     hide_obj("bob-robot-flamethrower-drone", "unit")
     hide_obj("bob-robot-laser-drone", "unit")
     hide_obj("bob-robot-gun-drone", "unit")
-    --data.raw.recipe["bob-robot-drone-frame"].hidden = true
-    --data.raw.recipe["bob-robot-drone-frame-large"].hidden = true
     hide_obj("bob-robot-drone-frame")
     hide_obj("bob-robot-drone-frame-large")
 
