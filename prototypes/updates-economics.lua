@@ -198,7 +198,7 @@ r = data.raw.recipe["bob-rtg"]
 if r then
     for i, component in pairs(r.ingredients) do
         if component.name == "bob-plutonium-239" then
-            component.amount = 2
+            component.amount = 3
         end
     end
 end
