@@ -45,7 +45,7 @@ local min_r
 local max_r
 local seed_prob
 
-for i = 0, 200 do
+for i = 1, 200 do
     min_r, max_r, seed_prob = get_basic_recipe(i)
     data:extend({
         {
