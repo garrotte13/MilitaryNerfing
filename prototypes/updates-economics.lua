@@ -1,45 +1,46 @@
-
-local r = data.raw.recipe["bob-basic-greenhouse-cycle"]
-if r then
-    r = data.raw.recipe["bob-basic-greenhouse-cycle"]
-    for i, component in pairs(r.ingredients) do
-        if component.name == "water" then
-            component.amount = 75
-        end
-    end
-    for i, component in pairs(r.results) do
-        if component.name == "wood" then
-            component.amount_max = 14
-        end
-    end
-end
-r = data.raw.recipe["bob-advanced-greenhouse-cycle"]
-if r then
-    for i, component in pairs(r.ingredients) do
-        if component.name == "water" then
-            component.amount = 75
-        end
-    end
-    for i, component in pairs(r.results) do
-        if component.name == "wood" then
-            component.amount_max = 35
-            component.amount_min = 15
-        end
-    end
-end
-r = data.raw["assembling-machine"]["bob-greenhouse"]
-if r then
-    r.crafting_speed = 0.5
-    r.energy_usage = "175kW"
-end
-
-r = data.raw.recipe["automation-science-pack"]
+local r = data.raw.recipe["automation-science-pack"]
 if r then
     for i, component in pairs(r.ingredients) do
         if component.name == "bob-basic-circuit-board" then
             component.name = "copper-cable"
             component.amount = 3
         end
+    end
+end
+
+if mods["bobgreenhouse"] and not settings.startup["mn-NewGreenhouse"].value then
+    r = data.raw.recipe["bob-basic-greenhouse-cycle"]
+    if r then
+        r = data.raw.recipe["bob-basic-greenhouse-cycle"]
+        for i, component in pairs(r.ingredients) do
+            if component.name == "water" then
+                component.amount = 75
+            end
+        end
+        for i, component in pairs(r.results) do
+            if component.name == "wood" then
+                component.amount_max = 14
+            end
+        end
+    end
+    r = data.raw.recipe["bob-advanced-greenhouse-cycle"]
+    if r then
+        for i, component in pairs(r.ingredients) do
+            if component.name == "water" then
+                component.amount = 75
+            end
+        end
+        for i, component in pairs(r.results) do
+            if component.name == "wood" then
+                component.amount_max = 35
+                component.amount_min = 15
+            end
+        end
+    end
+    r = data.raw["assembling-machine"]["bob-greenhouse"]
+    if r then
+        r.crafting_speed = 0.5
+        r.energy_usage = "175kW"
     end
 end
 
@@ -170,7 +171,7 @@ if r then
 end
 
 r = data.raw.recipe["bob-limestone"]
-if r then
+if r and not settings.startup["mn-NewGreenhouse"].value then
     for i, component in pairs(r.results) do
         if component.name == "bob-carbon-dioxide" then
             component.amount = 20
