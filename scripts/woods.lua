@@ -3,17 +3,14 @@ local woods = {}
 
 Random tree generation
 In a GH radius.
-N > 0 and N < 200*1.5
-How close is trees number to average: generate tree if RND(1, 5 * (math.ceil(abs(N-100)/5)+30)) == 1
+Conditions:
+- grade > 0 and total_trees < maxgrade*1.5
+- time check for house.products_finished to pass milestone value, for example, every 7
+How close is trees number to average: generate tree if RND(1, 1 * (math.ceil(abs(grade-maxgrade*0.5)/5)+maxgrade*0.05)) == 1
 Where to put the tree?
 ]]
+local MNconst = require("scripts.constants")
 
-local GH_radius = 20
-local GH_grade_max = 200
-
-local GH_names = {"bob-greenhouse","bob-greenhouse-carbo","bob-greenhouse-advanced"}
---replace with key-value table
-local GH_recipe_prefixes = {"mn-basic-greenhouse-cycle-", "mn-carbo-greenhouse-cycle-", "mn-advanced-greenhouse-cycle-"}
 
 local function GH_SetRecipe(house, grade)
     local progress_now = house.crafting_progress or 0
@@ -22,28 +19,21 @@ local function GH_SetRecipe(house, grade)
         house.recipe_locked = true
         return progress_now
     else
-        local name
-        if house.name == GH_names[1] then
-            name = GH_recipe_prefixes[1]
-        elseif house.name == GH_names[2] then
-            name = GH_recipe_prefixes[2]
-        else
-            name = GH_recipe_prefixes[3]
-        end 
-        house.set_recipe(name .. grade)
+        house.set_recipe(MNconst.GH_recipe_prefixes[house.name] .. grade)
         house.crafting_progress = progress_now
         house.recipe_locked = true
     end
 end
 
-local function find_houses(entity)
+local function find_houses(entity, dbl)
     if not storage.mn_chunks then
         return
     end
-    local zminX = math.floor( (entity.position.x - GH_radius) / 32)
-    local zmaxX = math.floor( (entity.position.x + GH_radius) / 32)
-    local zminY = math.floor( (entity.position.y - GH_radius) / 32)
-    local zmaxY = math.floor( (entity.position.y + GH_radius) / 32)
+    local s_radius = dbl and 2*MNconst.GH_radius or MNconst.GH_radius
+    local zminX = math.floor( (entity.position.x - s_radius) / 32)
+    local zmaxX = math.floor( (entity.position.x + s_radius) / 32)
+    local zminY = math.floor( (entity.position.y - s_radius) / 32)
+    local zmaxY = math.floor( (entity.position.y + s_radius) / 32)
     local found_chunks
     for zx = zminX, zmaxX do
         for zy = zminY, zmaxY do
@@ -56,7 +46,7 @@ local function find_houses(entity)
     end
     if not found_chunks then return end
 
-    local found = entity.surface.find_entities_filtered{position = entity.position, radius = GH_radius - 1.28, name = GH_names}
+    local found = entity.surface.find_entities_filtered{position = entity.position, radius = s_radius - 1.28, name = MNconst.GH_names}
     local f_houses = {}
     if found and found[1] then
         for i = 1,#found do
@@ -71,16 +61,17 @@ end
 function woods.GHadded(entity, t)
     local pos = entity.position
     local r = entity.unit_number
+    local maxgrade = MNconst.GH_max_grades[entity.name] 
     if not storage.mn_gh then
         storage.mn_gh = {}
     end
     local houses = storage.mn_gh
     local houses_near
-    local trees_found = entity.surface.find_entities_filtered{position = pos, radius = GH_radius-0.38, type = "tree", limit = 400}
+    local trees_found = entity.surface.find_entities_filtered{position = pos, radius = MNconst.GH_radius-0.38, type = "tree", limit = maxgrade*2}
     local trees_list = {}
     local trees_number = 0
     if trees_found and trees_found[1] then
-        houses_near = find_houses(entity)
+        houses_near = find_houses(entity, true)
         for i=1,#trees_found do
             local tree_is_busy
             if not ( string.find(trees_found[i].name, "dead") or string.find(trees_found[i].name, "dry") ) then
@@ -101,7 +92,7 @@ function woods.GHadded(entity, t)
                     trees_number = trees_number + 1
                 end
             end
-            if trees_number == 200 then
+            if trees_number == maxgrade then
                 break
             end
         end
@@ -145,13 +136,13 @@ function woods.GHremoved(entity, t)
             table.insert(trees_found, t)
         end
         houses[r].tr_list = nil
-        local houses_near = find_houses(entity) -- not all possible g-houses here!
+        local houses_near = find_houses(entity, true)
         if houses_near then
-            local ds = GH_radius^2
+            local ds = MNconst.GH_radius^2
             for y = 1,#trees_found do
                 for i = 1,#houses_near do
                     local h = houses_near[i].unit_number
-                    if houses[h].grade < 200 and ((houses[h].pos.x - trees_found[y].position.x)^2 + (houses[h].pos.y - trees_found[y].position.y)^2) <= ds then
+                    if houses[h].grade < MNconst.GH_max_grades[houses_near[i].name] and ((houses[h].pos.x - trees_found[y].position.x)^2 + (houses[h].pos.y - trees_found[y].position.y)^2) <= ds then
                         houses[h].tr_list[trees_found[y].position.x.. ":".. trees_found[y].position.y] = trees_found[y]
                         houses[h].grade = houses[h].grade + 1
                         break
@@ -177,7 +168,7 @@ function woods.TreeAdded(entity, t)
         for i = 1,#houses_near do
             h = houses_near[i].unit_number
             houses[h].trees_total = houses[h].trees_total + 1
-            if tree_is_free and houses[h].grade < 200 then
+            if tree_is_free and houses[h].grade < MNconst.GH_max_grades[houses_near[i].name] then
                 houses[h].grade = houses[h].grade + 1
                 tree_is_free = false
                 houses[h].tr_list[entity.position.x .. ":" .. entity.position.y] = entity

@@ -1,26 +1,28 @@
+-- CONSTANTS in prototype phase
+local GH_radius = 20
+local GH_names = {"bob-greenhouse","bob-greenhouse-carbo","bob-greenhouse-advanced"}
+local GH_recipe_prefixes = {
+    ["bob-greenhouse"] = "mn-basic-greenhouse-cycle-",
+    ["bob-greenhouse-carbo"] = "mn-carbo-greenhouse-cycle-",
+    ["bob-greenhouse-advanced"] = "mn-advanced-greenhouse-cycle-"
+}
+
+local GH_max_grades = {
+    ["bob-greenhouse"] = 60,
+    ["bob-greenhouse-carbo"] = 90,
+    ["bob-greenhouse-advanced"] = 120
+}
+
 local function myround(x)
     return math.floor(x+0.5)
 end
-local function get_basic_recipe(grade) -- 10..20 max
-    --local grade = math.min(200, grade)
-    local min_from_grade = myround(grade/20)
-    local max_from_grade = math.min(20, ( min_from_grade + math.ceil(grade/13.4) ))
-    local seed_prob = grade/400
-    return min_from_grade, max_from_grade, seed_prob
-end
-local function get_carbo_recipe(grade) -- 15..35 max
-    --local grade = math.min(200, grade)
-    local min_from_grade = myround(grade/13.4)
-    local max_from_grade = math.min(35, ( min_from_grade + math.ceil(grade/6.8) ))
-    local seed_prob = grade/300
-    return min_from_grade, max_from_grade, seed_prob
-end
-local function get_fertilizer_recipe(grade) -- 20..40 max
-    --local grade = math.min(200, grade)
-    local min_from_grade = myround(grade/10)
-    local max_from_grade = math.min(40, ( min_from_grade + math.ceil(grade/6.8) ))
-    local seed_prob = grade/200
-    return min_from_grade, max_from_grade, seed_prob
+
+local function get_wood_recipe(minTop, maxTop, seedTop, timeTop, gradeTop, grade)
+    local min_from_grade = myround( grade / (gradeTop/minTop) )
+    local max_from_grade = math.min(maxTop, min_from_grade + math.ceil( grade / (gradeTop / (1.5*minTop) ) ) )
+    local seed_prob = (grade/gradeTop) * seedTop
+    local time_from_grade = timeTop + myround( (1 - grade/gradeTop) * ( timeTop / 3 ) )
+    return min_from_grade, max_from_grade, seed_prob, time_from_grade
 end
 
 data.raw.recipe["bob-seedling"].hidden = true
@@ -44,9 +46,10 @@ data:extend({
 local min_r
 local max_r
 local seed_prob
+local time_req
 
-for i = 1, 200 do
-    min_r, max_r, seed_prob = get_basic_recipe(i)
+for i = 1, GH_max_grades["bob-greenhouse"] do
+    min_r, max_r, seed_prob, time_req = get_wood_recipe(10, 20, 0.4, 60, GH_max_grades["bob-greenhouse"], i)
     data:extend({
         {
             type = "recipe",
@@ -62,15 +65,17 @@ for i = 1, 200 do
                 { type = "item", name = "bob-seedling", amount = 1, probability = seed_prob}
             },
             allow_decomposition = false,
-            energy_required = 45,
+            energy_required = time_req,
             always_show_products = true,
             --show_amount_in_title = false,
-            emissions_multiplier = 2,
+            emissions_multiplier = 0.5,
             localised_name = {"item-name.wood"},
             main_product = "wood"
         }
     })
-    min_r, max_r, seed_prob = get_carbo_recipe(i)
+end
+for i = 1, GH_max_grades["bob-greenhouse-carbo"] do
+    min_r, max_r, seed_prob, time_req = get_wood_recipe(15, 35, 0.6, 60, GH_max_grades["bob-greenhouse-carbo"], i)
     data:extend({
         {
             type = "recipe",
@@ -87,15 +92,17 @@ for i = 1, 200 do
                 { type = "item", name = "bob-seedling", amount = 1, probability = seed_prob}
             },
             allow_decomposition = false,
-            energy_required = 45,
+            energy_required = time_req,
             always_show_products = true,
             --show_amount_in_title = false,
-            emissions_multiplier = 1,
+            emissions_multiplier = 0.1,
             localised_name = {"item-name.wood"},
             main_product = "wood"
         }
     })
-    min_r, max_r, seed_prob = get_fertilizer_recipe(i)
+end
+for i = 1, GH_max_grades["bob-greenhouse-advanced"] do
+    min_r, max_r, seed_prob, time_req = get_wood_recipe(20, 40, 0.9, 45, GH_max_grades["bob-greenhouse-advanced"], i)
     data:extend({
         {
             type = "recipe",
@@ -113,10 +120,10 @@ for i = 1, 200 do
                 { type = "item", name = "bob-seedling", amount = 1, probability = seed_prob}
             },
             allow_decomposition = false,
-            energy_required = 45,
+            energy_required = time_req,
             always_show_products = true,
             --show_amount_in_title = false,
-            emissions_multiplier = 1.5,
+            emissions_multiplier = 0.2,
             localised_name = {"item-name.wood"},
             main_product = "wood"
         }

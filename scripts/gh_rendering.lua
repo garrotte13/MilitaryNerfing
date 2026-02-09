@@ -1,6 +1,6 @@
 local house_renders = {}
-local GH_radius = 20
-local GH_names = {"bob-greenhouse","bob-greenhouse-carbo","bob-greenhouse-advanced"}
+local MN_const = require("scripts.constants")
+
 local function v_in_table(v, t)
   for i = 1, #t do
       if t[i] == v then return true end
@@ -10,9 +10,9 @@ end
 local function house_cursor(player)
     local pcs = player.cursor_stack
     local pcg = player.cursor_ghost
-    if pcs and pcs.valid_for_read and pcs.valid and v_in_table(pcs.name,GH_names) then
+    if pcs and pcs.valid_for_read and pcs.valid and v_in_table(pcs.name,MN_const.GH_names) then
       return true
-    elseif pcg and pcg.valid and v_in_table(pcg.name,GH_names) then
+    elseif pcg and pcg.valid and v_in_table(pcg.name,MN_const.GH_names) then
       return true
     end
 end
@@ -45,7 +45,7 @@ function house_renders.add_circle(house, player)
       if player and house_cursor(player) then
         r_obj = rendering.draw_circle{
           color={r=0.05, g=0.10, b=0.10, a=0.05},
-          radius = GH_radius,
+          radius = MN_const.GH_radius,
           filled=true,
           target=house,
           players={player},
@@ -57,7 +57,7 @@ function house_renders.add_circle(house, player)
       else
         r_obj = rendering.draw_circle{
           color={r=0.05, g=0.10, b=0.10, a=0.05},
-          radius = GH_radius,
+          radius = MN_const.GH_radius,
           filled=true,
           target=house,
           players={},
@@ -186,7 +186,7 @@ end
 function house_renders.selection_changed(player)
     local selection = player.selected
     if selection and selection.valid and
-     ( v_in_table(selection.name, GH_names) or selection.name == "entity-ghost" and v_in_table(selection.ghost_name, GH_names) )  then
+     ( v_in_table(selection.name, MN_const.GH_names) or selection.name == "entity-ghost" and v_in_table(selection.ghost_name, MN_const.GH_names) )  then
       show_circle(selection, player)
      elseif not house_cursor(player) then
       hide_all_circles(player)
