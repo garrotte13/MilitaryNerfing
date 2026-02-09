@@ -1,4 +1,5 @@
 local woods = require("__MilitaryNerfing__/scripts/woods")
+local circle_rendering = require("scripts.gh_rendering")
 
 --[[
 
@@ -11,16 +12,19 @@ local function v_in_table(v, t)
 end
 
 -- CONSTANTS
-local GH_radius = 30
+local GH_radius = 20
 local GH_grade_max = 200
 local GH_names = {"bob-greenhouse","bob-greenhouse-carbo","bob-greenhouse-advanced"}
 
 local function smth_built(e)
     if e.entity and e.entity.valid then
         if v_in_table(e.entity.name, GH_names) then
+            circle_rendering.add_circle(e.entity, game.players[e.player_index])
             woods.GHadded(e.entity, e.tick)
         elseif e.entity.type == "tree" then
             woods.TreeAdded(e.entity, e.tick)
+        elseif e.entity.name == "entity-ghost" and v_in_table(e.entity.ghost_name , GH_names) then
+            circle_rendering.add_circle(e.entity, game.players[e.player_index])
         end
     end
 end
@@ -28,9 +32,12 @@ end
 local function smth_destroyed(e)
     if e.entity then
         if v_in_table(e.entity.name, GH_names) then
+            circle_rendering.remove_circle(e.entity)
             woods.GHremoved(e.entity, e.tick)
         elseif e.entity.type == "tree" then
             woods.TreeRemoved(e.entity, e.tick)
+        elseif e.entity.name == "entity-ghost" and v_in_table(e.entity.ghost_name, GH_names) then
+            circle_rendering.remove_circle(e.entity)
         end
     end
 end
@@ -55,3 +62,12 @@ script.on_event({
 	defines.events.script_raised_destroy,
 }, smth_destroyed)
 
+
+-- Pure rendering events
+script.on_event(defines.events.on_selected_entity_changed, function(e)
+    circle_rendering.selection_changed(game.players[e.player_index])
+end)
+
+ script.on_event(defines.events.on_player_cursor_stack_changed, function(e)
+    circle_rendering.cursor_changed(game.players[e.player_index])
+end)

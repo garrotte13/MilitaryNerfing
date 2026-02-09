@@ -8,7 +8,7 @@ How close is trees number to average: generate tree if RND(1, 5 * (math.ceil(abs
 Where to put the tree?
 ]]
 
-local GH_radius = 30
+local GH_radius = 20
 local GH_grade_max = 200
 
 local GH_names = {"bob-greenhouse","bob-greenhouse-carbo","bob-greenhouse-advanced"}
