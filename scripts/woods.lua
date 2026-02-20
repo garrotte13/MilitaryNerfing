@@ -1,16 +1,93 @@
 local woods = {}
---[[
 
-Random tree generation
-In a GH radius.
-Conditions:
-- grade > 0 and total_trees < maxgrade*1.5
-- time check for house.products_finished to pass milestone value, for example, every 7
-How close is trees number to average: generate tree if RND(1, 1 * (math.ceil(abs(grade-maxgrade*0.5)/5)+maxgrade*0.05)) == 1
-Where to put the tree?
-]]
 local MNconst = require("scripts.constants")
+local flora = require("scripts.flora")
+local act_types = {
+    grow = 1,
+    mature = 2
+}
 
+local function find_free_tick(e_tick)
+    local action_ticks = storage.mn_acts
+    while action_ticks[e_tick] do e_tick = e_tick + 20 end
+return e_tick
+end
+
+function woods.MN_actions(e)
+    local act_now = storage.mn_acts[e.tick]
+    --game.print("my tick is: ".. e.tick)
+    if not act_now then return end
+    if act_now.type == act_types.grow then
+        local house = storage.mn_gh[act_now.r]
+        if not house then return end
+        if (house.entity.products_finished >= house.lastP + 2) and house.grade > 0 then
+            house.lastP = house.entity.products_finished
+            local max_grade = MNconst.GH_max_grades[house.entity.name]
+            if (house.trees_total<max_grade*4) and math.random(1, math.ceil(math.abs(house.trees_total-max_grade*0.7)/5+max_grade*0.05)) == 1 then
+                game.print("Greenhouse #".. act_now.r.. " is ready to grow a tree")
+                local trees_found = {}
+                for _, t in pairs(house.tr_list) do
+                    table.insert(trees_found, t)
+                end
+                if house.entity.get_output_inventory().remove({name="bob-seedling", count=1}) > 0 and math.random(1,7) > 1 then
+                    local parent_tree = trees_found[math.random(1,#trees_found)]
+                    local newborn_pos = {
+                        x = parent_tree.position.x + (math.random(0,60)-30)/10,
+                        y = parent_tree.position.y + (math.random(0,60)-30)/10,
+                    }
+                    game.print("A tree is to be placed!")
+                    newborn_pos = parent_tree.surface.find_non_colliding_position(parent_tree.name, newborn_pos, 2, 0.01)
+                    if newborn_pos then
+                        local t_tile = parent_tree.surface.get_tile(newborn_pos)
+                        local t_name = flora.check_tile_for_tree(t_tile)
+                        if t_name then
+                            parent_tree.surface.create_entity{name = parent_tree.name, position = newborn_pos, create_build_effect_smoke = true, raise_built = true}
+                            game.print("A tree is placed here: [gps=" .. newborn_pos.x.. ",".. newborn_pos.y.. "]")
+                        else
+                            game.print("Selected land is not fertile for a new tree")    
+                        end
+                    else
+                        game.print("No place was found for a new tree")
+                    end
+                end
+
+            else
+                --game.print("Greenhouse #".. act_now.r.. " prepared for a tree growth, but has bad luck")
+            end
+        else
+            game.print("Greenhouse #".. act_now.r.. " hasn't been working enough to change forest")
+        end
+        storage.mn_acts[find_free_tick(e.tick + MNconst.GH_grow_interval)] = {
+            type = act_types.grow,
+            r = storage.mn_acts[e.tick].r
+        }
+    elseif act_now.type == act_types.mature then
+        local sapling = act_now.e
+        if not sapling or not sapling.valid then return end
+        local pos = sapling.position
+        local sapling_surface = sapling.surface
+        sapling.destroy()
+        if math.random(1,5) > 1 then
+            if pos then
+                local t_tile = sapling_surface.get_tile(pos)
+                local t_name = flora.check_tile_for_tree(t_tile)
+                if t_name then 
+                    pos = sapling_surface.find_non_colliding_position(t_name, pos, 1.8, 0.01)
+                    if pos then
+                        sapling_surface.create_entity{name = t_name, position = pos, create_build_effect_smoke = true, raise_built = true}
+                    end
+                end
+            end
+        end
+    end
+    storage.mn_acts[e.tick] = nil
+end
+
+function woods.GH_init()
+    storage.mn_gh = {}
+    storage.mn_acts = {}
+
+end
 
 local function GH_SetRecipe(house, grade)
     local progress_now = house.crafting_progress or 0
@@ -26,9 +103,6 @@ local function GH_SetRecipe(house, grade)
 end
 
 local function find_houses(entity, dbl)
-    if not storage.mn_chunks then
-        return
-    end
     local s_radius = dbl and 2*MNconst.GH_radius or MNconst.GH_radius
     local zminX = math.floor( (entity.position.x - s_radius) / 32)
     local zmaxX = math.floor( (entity.position.x + s_radius) / 32)
@@ -37,7 +111,7 @@ local function find_houses(entity, dbl)
     local found_chunks
     for zx = zminX, zmaxX do
         for zy = zminY, zmaxY do
-            if storage.mn_chunks[zx.. ":".. zy] then
+            if storage.mn_chunks[entity.surface.index.. ":".. zx.. ":".. zy] then
                 found_chunks = true
                 break
             end
@@ -46,7 +120,7 @@ local function find_houses(entity, dbl)
     end
     if not found_chunks then return end
 
-    local found = entity.surface.find_entities_filtered{position = entity.position, radius = s_radius - 1.28, name = MNconst.GH_names}
+    local found = entity.surface.find_entities_filtered{position = entity.position, radius = s_radius - 1.28, name = MNconst.GH_names, force = "player" }
     local f_houses = {}
     if found and found[1] then
         for i = 1,#found do
@@ -62,12 +136,9 @@ function woods.GHadded(entity, t)
     local pos = entity.position
     local r = entity.unit_number
     local maxgrade = MNconst.GH_max_grades[entity.name] 
-    if not storage.mn_gh then
-        storage.mn_gh = {}
-    end
     local houses = storage.mn_gh
     local houses_near
-    local trees_found = entity.surface.find_entities_filtered{position = pos, radius = MNconst.GH_radius-0.38, type = "tree", limit = maxgrade*2}
+    local trees_found = entity.surface.find_entities_filtered{position = pos, radius = MNconst.GH_radius-0.38, type = "tree"}
     local trees_list = {}
     local trees_number = 0
     if trees_found and trees_found[1] then
@@ -103,21 +174,28 @@ function woods.GHadded(entity, t)
         grade = trees_number,
         trees_total = 0,
         pos = pos,
+        entity = entity,
+        lastP = entity.products_finished or 0,
         tr_list = trees_list
     }
     if trees_found then houses[r].trees_total = #trees_found end
     GH_SetRecipe(entity, trees_number)
-    game.print("GH installed. Engaged trees: ".. trees_number.. " Total trees: ".. houses[r].trees_total )
     local chunk_x = math.floor(pos.x/32)
     local chunk_y = math.floor(pos.y/32)
-    if not storage.mn_chunks then
-        storage.mn_chunks = {}
-    end
-    if storage.mn_chunks[chunk_x.. ":".. chunk_y] then
-        storage.mn_chunks[chunk_x.. ":".. chunk_y] = storage.mn_chunks[chunk_x.. ":".. chunk_y] + 1
+    if storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] then
+        storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] = storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] + 1
     else
-        storage.mn_chunks[chunk_x.. ":".. chunk_y] = 1
+        storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] = 1
     end
+    --if not t then t = 0 else
+        t = game.tick + MNconst.GH_grow_interval
+        t = find_free_tick(math.ceil(t/20)*20)
+    --end
+    storage.mn_acts[t] = {
+        type = act_types.grow,
+        r = r
+    }
+    game.print("GH #".. r.. " installed. To be checked next time at tick:".. t .. " Engaged trees: ".. trees_number.. " Total trees: ".. houses[r].trees_total )
 end
 
 function woods.GHremoved(entity, t)
@@ -126,9 +204,9 @@ function woods.GHremoved(entity, t)
     local houses = storage.mn_gh
     local chunk_x = math.floor(pos.x/32)
     local chunk_y = math.floor(pos.y/32)
-    storage.mn_chunks[chunk_x.. ":".. chunk_y] = storage.mn_chunks[chunk_x.. ":".. chunk_y] - 1
-    if storage.mn_chunks[chunk_x.. ":".. chunk_y] < 1 then
-        storage.mn_chunks[chunk_x.. ":".. chunk_y] = nil
+    storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] = storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] - 1
+    if storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] < 1 then
+        storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] = nil
     end
     if houses[r].grade > 0 then
         local trees_found = {}
@@ -194,6 +272,17 @@ function woods.TreeRemoved(entity, t)
             end
         end
     end
+end
+
+function woods.SaplingPlaced(entity, t)
+    --if math.random(1,5) > 2 then
+        storage.mn_acts[find_free_tick(math.ceil((t+MNconst.GH_grow_interval*0.5)/20)*20)] = {
+            type = act_types.mature,
+            e = entity
+        }
+    --else
+      --  entity.destroy() --bad luck
+    --end
 end
 
 return woods

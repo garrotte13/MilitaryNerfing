@@ -1,6 +1,7 @@
 require("__MilitaryNerfing__/prototypes/updates-economics")
 if mods["bobgreenhouse"] and settings.startup["mn-NewGreenhouse"].value then
     require("__MilitaryNerfing__/prototypes/newgreenhouse")
+    require("__MilitaryNerfing__/prototypes/saplings")
 end
 require("__MilitaryNerfing__/prototypes/updates-military")
 
