@@ -4,7 +4,8 @@ local MNconst = require("scripts.constants")
 local flora = require("scripts.flora")
 local act_types = {
     grow = 1,
-    mature = 2
+    mature = 2,
+    re_adding = 3
 }
 
 local function find_free_tick(e_tick)
@@ -19,7 +20,10 @@ function woods.MN_actions(e)
     if not act_now then return end
     if act_now.type == act_types.grow then
         local house = storage.mn_gh[act_now.r]
-        if not house then return end
+        if not house then
+            storage.mn_acts[e.tick] = nil
+            return
+        end
         if (house.entity.products_finished >= house.lastP + 2) and house.grade > 0 then
             house.lastP = house.entity.products_finished
             local max_grade = MNconst.GH_max_grades[house.entity.name]
@@ -52,7 +56,7 @@ function woods.MN_actions(e)
                 end
 
             else
-                --game.print("Greenhouse #".. act_now.r.. " prepared for a tree growth, but has bad luck")
+                game.print("Greenhouse #".. act_now.r.. " prepared for a tree growth, but has bad luck")
             end
         else
             game.print("Greenhouse #".. act_now.r.. " hasn't been working enough to change forest")
@@ -78,6 +82,18 @@ function woods.MN_actions(e)
                     end
                 end
             end
+        end
+    elseif act_now.type == act_types.re_adding then
+        local house = storage.mn_gh[act_now.r]
+        if house and house.entity and house.entity.valid then
+            local chunkk = house.entity.surface.index.. ":".. math.floor(house.pos.x/32).. ":".. math.floor(house.pos.y/32)
+            storage.mn_chunks[chunkk] = storage.mn_chunks[chunkk] - 1
+            if storage.mn_chunks[chunkk] < 1 then
+                storage.mn_chunks[chunkk] = nil
+            end
+            local pa = house.lastP
+            woods.GHadded(house.entity, e.tick)
+            storage.mn_gh[act_now.r].lastP = pa
         end
     end
     storage.mn_acts[e.tick] = nil
@@ -176,7 +192,8 @@ function woods.GHadded(entity, t)
         pos = pos,
         entity = entity,
         lastP = entity.products_finished or 0,
-        tr_list = trees_list
+        tr_list = trees_list,
+        re_set = nil
     }
     if trees_found then houses[r].trees_total = #trees_found end
     GH_SetRecipe(entity, trees_number)
@@ -187,10 +204,10 @@ function woods.GHadded(entity, t)
     else
         storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] = 1
     end
-    --if not t then t = 0 else
-        t = game.tick + MNconst.GH_grow_interval
-        t = find_free_tick(math.ceil(t/20)*20)
-    --end
+    if not t then t = game.tick end
+    t = t + MNconst.GH_grow_interval
+    t = find_free_tick(math.ceil(t/20)*20)
+    
     storage.mn_acts[t] = {
         type = act_types.grow,
         r = r
@@ -202,16 +219,15 @@ function woods.GHremoved(entity, t)
     local r = entity.unit_number
     local pos = entity.position
     local houses = storage.mn_gh
-    local chunk_x = math.floor(pos.x/32)
-    local chunk_y = math.floor(pos.y/32)
-    storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] = storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] - 1
-    if storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] < 1 then
-        storage.mn_chunks[entity.surface.index.. ":".. chunk_x.. ":".. chunk_y] = nil
+    local chunkk = entity.surface.index.. ":".. math.floor(pos.x/32).. ":".. math.floor(pos.y/32)
+    storage.mn_chunks[chunkk] = storage.mn_chunks[chunkk] - 1
+    if storage.mn_chunks[chunkk] < 1 then
+        storage.mn_chunks[chunkk] = nil
     end
     if houses[r].grade > 0 then
         local trees_found = {}
         for _, t in pairs(houses[r].tr_list) do
-            table.insert(trees_found, t)
+            if t and t.valid then table.insert(trees_found, t) end
         end
         houses[r].tr_list = nil
         local houses_near = find_houses(entity, true)
@@ -269,6 +285,13 @@ function woods.TreeRemoved(entity, t)
                 houses[h].tr_list[entity.position.x .. ":" .. entity.position.y] = nil
                 houses[h].grade = houses[h].grade - 1
                 GH_SetRecipe(houses_near[i], houses[h].grade)
+                if not houses[h].re_set and houses[h].trees_total > houses[h].grade then
+                    houses[h].re_set = true
+                    storage.mn_acts[find_free_tick(math.ceil(9 + t/20)*20)] = {
+                        type = act_types.re_adding,
+                        r = h
+                    }
+                end
             end
         end
     end

@@ -17,7 +17,7 @@ end
 
 local function get_wood_recipe(minTop, maxTop, seedTop, timeTop, gradeTop, grade)
     local min_from_grade = myround( grade / (gradeTop/minTop) )
-    local max_from_grade = math.min(maxTop, min_from_grade + math.ceil( grade / (gradeTop / (1.5*minTop) ) ) )
+    local max_from_grade = math.min(maxTop, min_from_grade + math.ceil( grade / (gradeTop / (maxTop - minTop) ) ) )
     local seed_prob = (grade/gradeTop) * seedTop
     local time_from_grade = timeTop + myround( (1 - grade/gradeTop) * ( timeTop / 3 ) )
     return min_from_grade, max_from_grade, seed_prob, time_from_grade
@@ -47,7 +47,7 @@ local seed_prob
 local time_req
 
 for i = 1, GH_max_grades["bob-greenhouse"] do
-    min_r, max_r, seed_prob, time_req = get_wood_recipe(7, 18, 0.3, 60, GH_max_grades["bob-greenhouse"], i)
+    min_r, max_r, seed_prob, time_req = get_wood_recipe(10, 20, 0.3, 60, GH_max_grades["bob-greenhouse"], i)
     data:extend({
         {
             type = "recipe",
@@ -74,7 +74,7 @@ for i = 1, GH_max_grades["bob-greenhouse"] do
 end
 
 for i = 1, GH_max_grades["bob-greenhouse-advanced"] do
-    min_r, max_r, seed_prob, time_req = get_wood_recipe(12, 40, 0.4, 45, GH_max_grades["bob-greenhouse-advanced"], i)
+    min_r, max_r, seed_prob, time_req = get_wood_recipe(15, 45, 0.4, 45, GH_max_grades["bob-greenhouse-advanced"], i)
     data:extend({
         {
             type = "recipe",
@@ -131,6 +131,7 @@ local r = data.raw["assembling-machine"]["bob-greenhouse"]
 r.crafting_categories = {"mn-wood-spam-tier1"}
 r.energy_usage = "70kW"
 r.allow_copy_paste = false
+r.fast_replaceable_group = "bob-greenhouse"
 r.next_upgrade = "bob-greenhouse-advanced"
 local gh_adv = table.deepcopy(r)
 gh_adv.name = "bob-greenhouse-advanced"

@@ -179,7 +179,7 @@ local function show_circle(house, player)
       end
     end
     if not found then
-      circle_rendering.add_circle(house, player)
+      house_renders.add_circle(house, player)
     end
 end
 
