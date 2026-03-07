@@ -7,7 +7,3 @@ if mods["boblogistics"] then
     end
 
 end
-
-if mods["bobgreenhouse"] and mods["bobrevamp"] then
-    data.raw["bool-setting"]["mn-NewGreenhouse"].default_value = true
-end

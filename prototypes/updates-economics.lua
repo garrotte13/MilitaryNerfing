@@ -8,7 +8,7 @@ if r then
     end
 end
 
-if mods["bobgreenhouse"] and not settings.startup["mn-NewGreenhouse"].value then
+if mods["bobgreenhouse"] and not mods["nForester"] then
     r = data.raw.recipe["bob-basic-greenhouse-cycle"]
     if r then
         r = data.raw.recipe["bob-basic-greenhouse-cycle"]
@@ -146,9 +146,9 @@ if r then
     r.emissions_multiplier = 0.7
     for i, component in pairs(r.results) do
         if component.name == "light-oil" then
-            component.amount = 55
-        elseif component.name == "heavy-oil"  then
             component.amount = 45
+        elseif component.name == "heavy-oil"  then
+            component.amount = 55
         end
     end
 end
@@ -171,7 +171,7 @@ if r then
 end
 
 r = data.raw.recipe["bob-limestone"]
-if r and not settings.startup["mn-NewGreenhouse"].value then
+if r then
     for i, component in pairs(r.results) do
         if component.name == "bob-carbon-dioxide" then
             component.amount = 20
@@ -208,4 +208,13 @@ r = data.raw["resource"]["bob-sulfur"]
 if r then
     r.minable.fluid_amount = 10
     r.minable.required_fluid = "steam"
+end
+
+r = data.raw.recipe["bob-cobalt-steel-alloy"]
+if r then
+    for i, component in pairs(r.ingredients) do
+        if component.name == "bob-cobalt-plate" then
+            component.amount = 2
+        end
+    end
 end
