@@ -83,7 +83,7 @@ if mods["bobplates"] then
         r.energy_required = 3
         for i, component in pairs(r.ingredients) do
             if component.name == "light-oil" then
-                component.amount = 30
+                component.amount = 32
             end
         end
         for i, component in pairs(r.results) do
@@ -106,7 +106,14 @@ if mods["bobplates"] then
     end
 end
 
-
+r = data.raw.recipe["bob-enriched-fuel"]
+if r then
+    for i, component in pairs(r.ingredients) do
+        if component.name == "bob-liquid-fuel" then
+            component.amount = 24
+        end
+    end
+end
 
 r = data.raw.recipe["coal-liquefaction"]
 if r then
@@ -210,10 +217,10 @@ if r then
     r.minable.required_fluid = "steam"
 end
 
-r = data.raw.recipe["bob-cobalt-steel-alloy"]
+r = data.raw.recipe["bob-cobalt-plate"]
 if r then
     for i, component in pairs(r.ingredients) do
-        if component.name == "bob-cobalt-plate" then
+        if component.name == "bob-cobalt-oxide" then
             component.amount = 2
         end
     end
