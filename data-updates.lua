@@ -1,5 +1,6 @@
 require("__MilitaryNerfing__/prototypes/updates-economics")
 require("__MilitaryNerfing__/prototypes/updates-military")
+require("__MilitaryNerfing__/prototypes/oil")
 
 data.raw["gun"]["bob-tank-artillery-1"].attack_parameters.movement_slow_down_factor = 0.3
 data.raw["gun"]["bob-tank-artillery-1"].attack_parameters.movement_slow_down_cooldown = 170

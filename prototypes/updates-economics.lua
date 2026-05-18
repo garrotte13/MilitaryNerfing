@@ -98,12 +98,15 @@ if mods["bobplates"] then
         table.insert(r.results, {type = "item", name = "sulfur", amount = 1, probability=.04})
     end
 
+   
+--[[
     r = data.raw["recipe"]["rocket-fuel"]
     if data.raw.recipe["bob-liquid-fuel"] then
         table.insert(r.ingredients, {type = "fluid", name = "bob-liquid-fuel", amount = 10})
     else
         table.insert(r.ingredients, {type = "fluid", name = "light-oil", amount = 10})
     end
+    ]]
 end
 
 r = data.raw.recipe["bob-enriched-fuel"]

@@ -1,0 +1,1 @@
+require("__MilitaryNerfing__/prototypes/fix-graphics")
