@@ -1,12 +1,12 @@
 local r = data.raw.recipe["automation-science-pack"]
-if r then
+--[[if r then
     for i, component in pairs(r.ingredients) do
         if component.name == "bob-basic-circuit-board" then
             component.name = "copper-cable"
             component.amount = 3
         end
     end
-end
+end]]
 
 if mods["bobgreenhouse"] and not mods["nForester"] then
     r = data.raw.recipe["bob-basic-greenhouse-cycle"]
@@ -78,28 +78,144 @@ if mods["bobplates"] and settings.startup["bobmods-plates-cheapersteel"] then --
 end
 
 if mods["bobplates"] then
-    r = data.raw.recipe["bob-liquid-fuel"]
+
+--[[ SECOND way
+    r = data.raw.recipe["bob-sodium-chlorate"]
     if r then
-        r.energy_required = 3
+        r.ingredients = {
+            { amount = 3, name = "bob-sodium-hydroxide", type = "item" },
+            { amount = 3, name = "bob-hydrogen-chloride", type = "fluid" },
+            { amount = 30, name = "bob-pure-water", type = "fluid" }
+        }
+        r.category = "chemistry"
+        r.energy_required = 6
+        r.results = {
+            { amount = 3, name = "bob-sodium-chlorate", type = "item" },
+        }
+
+    end ]]
+    r = data.raw.recipe["bob-sodium-chlorate"]
+    if r then
         for i, component in pairs(r.ingredients) do
-            if component.name == "light-oil" then
-                component.amount = 32
+            if component.name == "bob-salt" then
+                component.amount = 3
             end
         end
         for i, component in pairs(r.results) do
-            if component.name == "bob-liquid-fuel" then
-                component.amount = 20
+            if component.name == "bob-sodium-chlorate" then
+                component.amount = 2
+            end
+        end
+        r.energy_required = 2
+    end
+
+  r = data.raw.recipe["bob-calcium-chloride"]
+    if r then
+        for i, component in pairs(r.ingredients) do
+            if component.name == "bob-hydrogen-chloride" then
+                component.amount = 25
+            end
+        end
+        for i, component in pairs(r.results) do
+            if component.name == "bob-hydrogen" then
+                component.amount = 10
             end
         end
     end
-    r = data.raw.recipe["bob-carbon"]
+
+
+    r = data.raw.recipe["bob-salt-water-electrolysis"]
     if r then
-        r.main_product = "bob-carbon"
+        for i, component in pairs(r.ingredients) do
+            if component.name == "bob-salt" then
+                component.amount = 2
+            elseif component.name == "bob-pure-water" then
+                component.amount = 20
+            end
+        end
+        for i, component in pairs(r.results) do
+            if component.name == "bob-chlorine" then
+                component.amount = 20
+            elseif component.name == "bob-hydrogen" then
+                component.amount = 12
+            end
+        end
+    end
+    --[[r = data.raw.recipe["bob-brine-electrolysis"]
+    if r then
+        for i, component in pairs(r.ingredients) do
+            if component.name == "bob-brine" then
+                component.amount = 30
+            end
+        end
+        for i, component in pairs(r.results) do
+            if component.name == "bob-chlorine" then
+                component.amount = 20
+            elseif component.name == "bob-hydrogen" then
+                component.amount = 15
+            end
+        end
+    end]]
+    r = data.raw.recipe["bob-alumina"]
+    if r then
+        for i, component in pairs(r.ingredients) do
+            if component.name == "bob-bauxite-ore" then
+                component.amount = 4
+            elseif component.name == "bob-sodium-hydroxide" then
+                component.amount = 2
+            end
+        end
+        r.energy_required = r.energy_required * 3
+        for i, component in pairs(r.results) do
+            if component.name == "bob-alumina" then
+                component.amount = 3
+            end
+        end
+    end
+ --[[   r = data.raw.recipe["bob-aluminium-plate"]
+    if r then
+        for i, component in pairs(r.ingredients) do
+            if component.name == "bob-alumina" then
+                component.amount = 4
+            end
+        end
+        r.energy_required = r.energy_required * 2
+        for i, component in pairs(r.results) do
+            if component.name == "bob-aluminium-plate" then
+                component.amount = 4
+            end
+        end
+    end]]
+
+
+    r = data.raw.recipe["carbon"]
+    if r then
+        r.main_product = "carbon"
+        r.energy_required = 4
+        table.insert(r.results, {type = "item", name = "sulfur", amount = 1, probability=.1, ignored_by_productivity = 1})
+        for i, component in pairs(r.ingredients) do
+            if component.name == "water" then
+                component.amount = 30
+            end
+        end
+        --[[r.ingredients = {
+            { amount = 4, name = "coal", type = "item" },
+            { amount = 120, name = "water", type = "fluid" }
+        }
+        r.results = {
+            { amount = 8, name = "carbon", type = "item" },
+            { amount = 1, name = "sulfur", type = "item", ignored_by_productivity = 1  }
+        }]]
+    end
+end
+
+--[[
+    r = data.raw.recipe["carbon"]
+    if r then
+        r.main_product = "carbon"
         table.insert(r.results, {type = "item", name = "sulfur", amount = 1, probability=.04})
     end
 
-   
---[[
     r = data.raw["recipe"]["rocket-fuel"]
     if data.raw.recipe["bob-liquid-fuel"] then
         table.insert(r.ingredients, {type = "fluid", name = "bob-liquid-fuel", amount = 10})
@@ -107,79 +223,40 @@ if mods["bobplates"] then
         table.insert(r.ingredients, {type = "fluid", name = "light-oil", amount = 10})
     end
     ]]
-end
 
-r = data.raw.recipe["bob-enriched-fuel"]
+
+r = data.raw.recipe["bob-pure-water"]
 if r then
-    for i, component in pairs(r.ingredients) do
-        if component.name == "bob-liquid-fuel" then
-            component.amount = 24
-        end
-    end
+    r.results[1].amount = 150
+    r.ingredients[1].amount = 150
+    table.insert(r.results, { amount = 1, name = "bob-salt", type = "item" })
+    r.main_product = "bob-pure-water"
+    r.energy_required = 3
 end
-
-r = data.raw.recipe["coal-liquefaction"]
+r = data.raw.recipe["bob-salt"]
 if r then
-    for i, component in pairs(r.ingredients) do
-        if component.name == "steam" then
-            component.minimum_temperature = 385
-        end
-    end
-end
-
-r = data.raw.recipe["basic-oil-processing"]
-for i, component in pairs(r.results) do
-    if component.name == "petroleum-gas" or component.name == "bob-sour-gas" then
-        component.amount = 55
-    end
-end
-
-r = data.raw.recipe["bob-oil-processing"]
-if r then
-    for i, component in pairs(r.results) do
-        if component.name == "light-oil" then
-            component.amount = 15
-        elseif component.name == "heavy-oil"  then
-            component.amount = 35
-        end
-    end
-end
-
-r = data.raw.recipe["bob-carbon-dioxide-oil-processing"]    -- make it worth it
-if r then
-    for i, component in pairs(r.ingredients) do
-        if component.name == "crude-oil" then
-            component.amount = 90
-        end
-    end
-    r.energy_required = 6
-    r.emissions_multiplier = 0.7
-    for i, component in pairs(r.results) do
-        if component.name == "light-oil" then
-            component.amount = 45
-        elseif component.name == "heavy-oil"  then
-            component.amount = 55
-        end
-    end
+    r.ingredients[1].amount = 150
+    r.energy_required = 1
 end
 
 r = data.raw.recipe["bob-carbon-from-wood"] -- don't go this way unless you're out of coal
 if r then
-    r.energy_required = 8
+    r.energy_required = 15
     for i, component in pairs(r.ingredients) do
         if component.name == "wood" then
-            component.amount = 5
+            component.amount = 10
         end
     end
     for i, component in pairs(r.results) do
-        if component.name == "bob-carbon" then
+        if component.name == "carbon" then
             component.amount = nil
-            component.amount_min = 1
-            component.amount_max = 2
+            component.amount_min = 3
+            component.amount_max = 4
         end
     end
 end
 
+--[[
 r = data.raw.recipe["bob-limestone"]
 if r then
     for i, component in pairs(r.results) do
@@ -188,6 +265,7 @@ if r then
         end
     end
 end
+]]
 
 r = data.raw.recipe["bob-resin-wood"]
 if r then
@@ -224,7 +302,75 @@ r = data.raw.recipe["bob-cobalt-plate"]
 if r then
     for i, component in pairs(r.ingredients) do
         if component.name == "bob-cobalt-oxide" then
-            component.amount = 2
+            component.amount = 3
         end
     end
+    r.energy_required = r.energy_required * 2
+end
+
+r = data.raw.technology["bob-nitroglycerin-processing"]
+if r and data.raw.recipe["kr-advanced-chemical-plant"] then
+    for i, component in pairs(r.prerequisites) do
+        if component == "oil-processing" then
+            r.prerequisites[i] = "kr-advanced-chemical-plant"
+            break
+        end        
+    end
+    r = data.raw.recipe["bob-nitroglycerin"]
+    r.category = "advanced-chemistry"
+    r.energy_required = 2
+    r.ingredients = {
+        { amount = 10, name = "bob-glycerol", type = "fluid" },
+        { amount = 15, name = "sulfuric-acid", type = "fluid" },
+        { amount = 15, name = "bob-nitric-acid", type = "fluid" },
+    }
+    data.raw.recipe["bob-sulfuric-nitric-acid"].hidden = true
+    data.raw.fluid["bob-sulfuric-nitric-acid"].hidden = true
+end
+
+if data.raw.recipe["bob-electric-chemical-mixing-furnace"] and data.raw.recipe["bob-electric-mixing-furnace"] and
+  not (settings.startup["bobmods-plates-convert-recipes"] and settings.startup["bobmods-plates-convert-recipes"].value) then
+    r = table.deepcopy(data.raw.recipe["bob-electric-chemical-mixing-furnace"])
+    r.localised_name = { "entity-name.bob-electric-chemical-mixing-furnace" }
+    r.name = "bob-electric-chemical-mixing-furnace-from-mixing"
+    table.insert(r.ingredients, { amount = 5, name = "bob-steel-pipe", type = "item" })
+    for i, component in pairs(r.ingredients) do
+        if component.name == "bob-electric-chemical-furnace" then
+            component.name = "bob-electric-mixing-furnace"
+        end
+    end
+    data:extend({r})
+    table.insert(data.raw.technology["bob-multi-purpose-furnace-1"].effects, { recipe = "bob-electric-chemical-mixing-furnace-from-mixing", type = "unlock-recipe" })
+end
+
+r = data.raw.technology["bob-railway-3"]
+--if r and data.raw.item["bob-advanced-logistic-science-pack"] then
+if r then
+    for i, component in pairs(r.unit.ingredients) do
+        if component[1] == "production-science-pack" then
+            r.unit.ingredients[i][1] = "bob-advanced-logistic-science-pack"
+        end        
+    end
+    r.unit.count = 200
+    for i, component in pairs(r.prerequisites) do
+        if component == "production-science-pack" then
+            r.prerequisites[i] = "bob-advanced-logistic-science-pack"
+        end        
+    end
+
+end
+
+r = data.raw.technology["bob-fluid-wagon-3"]
+if r then
+    for i, component in pairs(r.unit.ingredients) do
+        if component[1] == "production-science-pack" then
+            r.unit.ingredients[i][1] = "bob-advanced-logistic-science-pack"
+        end        
+    end
+    for i, component in pairs(r.prerequisites) do
+        if component == "production-science-pack" then
+            r.prerequisites[i] = "bob-advanced-logistic-science-pack"
+        end        
+    end
+
 end

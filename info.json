@@ -8,7 +8,10 @@
     "dependencies": ["base >= 2.0.68",
       "? bobwarfare",
       "? bobplates",
+      "? bobrevamp",
       "? bobgreenhouse",
-      "? boblogistics"
+      "? boblogistics",
+      "? reskins-library",
+      "? reskins-bobs"
     ]
   }

@@ -68,6 +68,10 @@ for _, legs in pairs(data.raw["movement-bonus-equipment"]) do
     end
 end
 
+local r = data.raw.recipe["copper-nickel-firearm-magazine"]
+if r then
+    r.hidden = true
+end
 
 if mods["bobwarfare"] then
 --[[
@@ -111,7 +115,38 @@ if mods["bobwarfare"] then
         end
     end
 
-
+    -- fixing balance for armors
+    r = data.raw.armor["power-armor"].resistances
+    for i, res in pairs(r) do
+        if res.type == "physical" then
+            res.decrease = 7
+        elseif res.type == "acid" then
+            res.decrease = 0
+        end
+    end
+    r = data.raw.armor["modular-armor"].resistances
+    for i, res in pairs(r) do
+        if res.type == "physical" then
+            res.decrease = 5
+        end
+    end
+    r = data.raw.armor["power-armor-mk2"].resistances
+    for i, res in pairs(r) do
+        if res.type == "physical" then
+            res.decrease = 9
+        elseif res.type == "acid" then
+            res.decrease = 0
+        end
+    end
+    r = data.raw.armor["bob-power-armor-mk5"]
+    if r then
+        for i, res in pairs(r.resistances) do
+            if res.type == "bob-plasma" then
+                res.decrease = 30
+                res.percent = 90
+            end
+        end
+    end
 else
     -- a rocket can't reach the target without electronics be it Nauvis or outer worlds
     table.insert(data.raw.recipe["rocket"].ingredients, {type="item", name="advanced-circuit", amount=1})

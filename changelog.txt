@@ -21,3 +21,4 @@ Date: 2025-12-06
     - Triple Plutonium demands for Bob RTG
     - Doubled cobalt plate price
     - Added oil wells complex extraction
+    - Fixed early-mid armors (modular, power armors mk-1 and mk-2) to be weaker than in vanilla instead of being stronger, because they are much cheaper in Bob mods
