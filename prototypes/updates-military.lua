@@ -22,19 +22,19 @@ r.results[1].amount = 1
 r = data.raw["projectile"]["cannon-projectile"]
 for i, dmg_effect in pairs(r.action.action_delivery.target_effects) do
     if dmg_effect.type == "damage" and dmg_effect.damage.type == "physical" and dmg_effect.damage.amount == 1000 then
-        dmg_effect.damage.amount = 500
-        r.piercing_damage = 600
+        dmg_effect.damage.amount = 700
+        r.piercing_damage = 900
         break
     end
 end
-r = data.raw["projectile"]["uranium-cannon-projectile"]
+--[[r = data.raw["projectile"]["uranium-cannon-projectile"]
 for i, dmg_effect in pairs(r.action.action_delivery.target_effects) do
     if dmg_effect.type == "damage" and dmg_effect.damage.type == "physical" and dmg_effect.damage.amount == 2000 then
         dmg_effect.damage.amount = 1000
         r.piercing_damage = 1320
         break
     end
-end
+end]]
 
 r = data.raw["recipe"]["flamethrower-ammo"]
 local found
@@ -73,8 +73,25 @@ if r then
     r.hidden = true
 end
 
+if mods["bobvehicleequipment"] then
+    -- hiding bob plasma veh cannon
+    for i = 1, 4 do
+        data.raw.technology["bob-vehicle-big-turret-equipment-".. i].hidden = true
+        hide_obj("bob-vehicle-big-turret-equipment-" .. i, "active-defense-equipment")
+    end
+end
+
 if mods["bobwarfare"] then
---[[
+    if data.raw["ammo-turret"]["mortar-turret-mn"] then
+        for _, sp in pairs(data.raw["unit-spawner"]) do
+            table.insert(sp.trigger_target_mask, "mortar-victims")
+        end
+        for _, sp in pairs(data.raw["turret"]) do
+            table.insert(sp.trigger_target_mask, "mortar-victims")
+        end
+    end
+    
+  
     data.raw["unit"]["bob-robot-plasma-drone"].ai_settings =
     {
       allow_destroy_when_commands_fail = true,
@@ -85,20 +102,23 @@ if mods["bobwarfare"] then
     }
     data.raw["unit"]["bob-robot-plasma-drone"].affected_by_tiles = true
     data.raw["unit"]["bob-robot-laser-drone"].affected_by_tiles = true
-    ]]
+    table.insert(data.raw.recipe["bob-robot-plasma-drone"].ingredients, { amount = 9, name = "bob-rtg", type = "item" })
+    table.insert(data.raw.recipe["bob-robot-laser-drone"].ingredients, { amount = 4, name = "bob-rtg", type = "item" })
+    table.insert(data.raw.technology["bob-robot-plasma-drones"].prerequisites, "bob-rtg")
+    table.insert(data.raw.technology["bob-robot-laser-drones"].prerequisites, "bob-rtg")
 
     -- Hiding unlimited ammo forever lasting Bob drones
     
     data.raw.technology["bob-robot-gun-drones"].hidden = true
-    data.raw.technology["bob-robot-laser-drones"].hidden = true
+    --data.raw.technology["bob-robot-laser-drones"].hidden = true
     data.raw.technology["bob-robot-flamethrower-drones"].hidden = true
-    data.raw.technology["bob-robot-plasma-drones"].hidden = true
-    hide_obj("bob-robot-plasma-drone", "unit")
+    --data.raw.technology["bob-robot-plasma-drones"].hidden = true
+    --hide_obj("bob-robot-plasma-drone", "unit")
     hide_obj("bob-robot-flamethrower-drone", "unit")
-    hide_obj("bob-robot-laser-drone", "unit")
+    --hide_obj("bob-robot-laser-drone", "unit")
     hide_obj("bob-robot-gun-drone", "unit")
-    hide_obj("bob-robot-drone-frame")
-    hide_obj("bob-robot-drone-frame-large")
+    --hide_obj("bob-robot-drone-frame")
+    --hide_obj("bob-robot-drone-frame-large")
 
     -- Hiding vanilla rocket ammo
     data.raw.recipe["rocket"].hidden = true
@@ -147,6 +167,16 @@ if mods["bobwarfare"] then
             end
         end
     end
+    r = data.raw.recipe["flamethrower-turret"]
+    for i, component in pairs(r.ingredients) do
+        if component.name == "bob-steel-gear-wheel" then
+            component.name = "bob-cobalt-steel-gear-wheel"
+        elseif component.name == "bob-steel-pipe" then
+            component.name = "bob-aluminium-pipe"
+        end
+    end
+    table.insert(data.raw.technology["bob-plasma-turrets-3"].effects, { recipe = "bob-plasma-mn", type = "unlock-recipe" })
+    require("__MilitaryNerfing__/prototypes/upd_bobwarfare")
 else
     -- a rocket can't reach the target without electronics be it Nauvis or outer worlds
     table.insert(data.raw.recipe["rocket"].ingredients, {type="item", name="advanced-circuit", amount=1})

@@ -1,40 +1,57 @@
 require("__MilitaryNerfing__/prototypes/fix-graphics")
 
--- Create a list of furnace names we want to clean up after copying
-local furnaces_to_remove = {}
 
+local furnaces_to_remove = {}
 for furnace_name, furnace_prototype in pairs(data.raw["furnace"]) do
-    
-    -- CONDITION: Only process furnaces whose name starts with "bob-distillery"
     if string.find(furnace_name, "^bob%-distillery") then
-        
-        -- 1. Deep clone the furnace prototype to preserve all graphics/sounds
         local new_assembler = table.deepcopy(furnace_prototype)
-        
-        -- 2. Change the internal prototype type
         new_assembler.type = "assembling-machine"
-        
-        -- 3. Add MANDATORY properties required by Assembling Machines but missing in Furnaces
         new_assembler.crafting_categories = furnace_prototype.crafting_categories or { "smelting" }
-        
-        -- Assembling machines require a defined source inventory size for ingredients
         new_assembler.ingredient_count = new_assembler.ingredient_count or 4 
-        
-        -- Expand the result inventory size to support multiple output items
         new_assembler.result_inventory_size = 2 
-        
-        -- 4. Set optional visual cleanups (Hides the recipe selection circle over it)
         new_assembler.show_recipe_icon = false
-        
-        -- 5. Inject the newly converted entity into the assembling-machine table
         data.raw["assembling-machine"][furnace_name] = new_assembler
-        
-        -- Queue the old furnace name for deletion
         table.insert(furnaces_to_remove, furnace_name)
     end
 end
-
--- 6. Clean up data.raw so the game engine doesn't process them as furnaces anymore
 for _, furnace_name in ipairs(furnaces_to_remove) do
     data.raw["furnace"][furnace_name] = nil
 end
+
+--local plasma_proj = data.raw["projectile"]["bob-plasma-projectile"]
+r = data.raw.recipe["bob-heavy-water"]
+r.category = "advanced-chemistry"
+r.energy_required = 50
+r.allow_consumption = false
+r.allow_speed = false
+r.ingredients = {
+    { amount = 35, name = "low-enrich-heavy-water-mn", type = "fluid" }
+}
+r.results = {
+    { amount = 5, name = "bob-heavy-water", type = "fluid" },
+    { amount = 30, name = "bob-pure-water", type = "fluid" }
+
+}
+
+
+local old_plasma = data.raw["electric-turret"]["bob-plasma-turret-3"]
+if old_plasma then
+    local new_plasma = table.deepcopy(old_plasma)
+    new_plasma.type = "ammo-turret"
+    --new_plasma.name = "electric-ammo-turret-x"
+    new_plasma.inventory_size = 1
+    --new_plasma.prepare_with_no_ammo = false
+    --new_plasma.start_attacking_only_when_can_shoot = true
+    new_plasma.automated_ammo_count = 10
+    new_plasma.energy_source = table.deepcopy(old_plasma.energy_source)
+    new_plasma.energy_source.drain = "4800kW"
+    new_plasma.energy_per_shot = old_plasma.attack_parameters.ammo_type.energy_consumption  -- "22000kJ"
+    new_plasma.attack_parameters = table.deepcopy(old_plasma.attack_parameters)
+    new_plasma.attack_parameters.ammo_category = "bob-plasma-category-mn"
+    new_plasma.attack_parameters.health_penalty = -1
+    --new_plasma.prepare_range = nil
+    data.raw["electric-turret"]["bob-plasma-turret-3"] = nil
+    data:extend({ new_plasma,    
+     })
+end
+

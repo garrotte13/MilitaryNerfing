@@ -195,6 +195,14 @@ data.raw.fluid["petroleum-gas"].fuel_value = "420kJ"
 data.raw.fluid["bob-sour-gas"].fuel_value = "480kJ"
 data.raw.fluid["bob-glycerol"].fuel_value = "380kJ"
 
+data.raw["fluid-turret"]["flamethrower-turret"].attack_parameters.fluids =
+{
+    { type = "bob-liquid-fuel", damage_modifier = 1.3 },
+    { type = "light-oil", damage_modifier = 1.1 },
+    { type = "petroleum-gas", damage_modifier = 1.2 },
+    { type = "bob-alien-fire", damage_modifier = 1.7 }
+}
+
 r = data.raw.recipe["solid-fuel-from-heavy-oil"]
 if r then
     r.ingredients = {

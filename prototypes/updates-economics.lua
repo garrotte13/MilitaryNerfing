@@ -8,6 +8,15 @@ local r = data.raw.recipe["automation-science-pack"]
     end
 end]]
 
+r = data.raw.recipe["ammonia"]
+if r then
+    for i, component in pairs(r.ingredients) do
+        if component.name == "bob-nitrogen" then
+            component.amount = 12
+        end
+    end
+end
+
 if mods["bobgreenhouse"] and not mods["nForester"] then
     r = data.raw.recipe["bob-basic-greenhouse-cycle"]
     if r then
@@ -326,6 +335,10 @@ if r and data.raw.recipe["kr-advanced-chemical-plant"] then
     }
     data.raw.recipe["bob-sulfuric-nitric-acid"].hidden = true
     data.raw.fluid["bob-sulfuric-nitric-acid"].hidden = true
+end
+
+if data.raw.recipe["kr-advanced-chemical-plant"] then
+    require("__MilitaryNerfing__/prototypes/heavywater")
 end
 
 if data.raw.recipe["bob-electric-chemical-mixing-furnace"] and data.raw.recipe["bob-electric-mixing-furnace"] and
