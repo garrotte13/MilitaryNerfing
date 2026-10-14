@@ -40,19 +40,19 @@ data:extend({
     {
         type = "recipe",
         name = "bob-plasma-mn",
-        energy_required = 20,
+        energy_required = 40,
         category = "chemistry",
         enabled = false,
         ingredients = {
             {type = "item", name = "bob-cobalt-steel-alloy", amount = 3},
             {type = "item", name = "bob-aluminium-plate", amount = 2},
-            {type = "item", name = "advanced-circuit", amount = 1 },
-            {type = "fluid", name = "bob-nitrogen-dioxide", amount = 45},
+            {type = "item", name = "advanced-circuit", amount = 2 },
+            {type = "fluid", name = "bob-nitrogen-dioxide", amount = 85},
             {type = "fluid", name = "bob-deuterium", amount = 5},
             {type = "item", name = "bob-alien-artifact", amount = 1},
-            {type = "item", name = "explosives", amount = 1}
+            {type = "item", name = "explosives", amount = 2}
         },
-        results = { { type = "item", name = "bob-plasma-mn", amount = 1 } },
+        results = { { type = "item", name = "bob-plasma-mn", amount = 2 } },
     }
 })
 

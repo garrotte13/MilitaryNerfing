@@ -5,6 +5,9 @@ if mods["bobplates"] and mods["bobrevamp"] and (settings.startup["bobmods-revamp
     require("__MilitaryNerfing__/prototypes/sulfur_coke")
     require("__MilitaryNerfing__/prototypes/asphalt")    
 end
+if data.raw.recipe["kr-advanced-chemical-plant"] then
+    require("__MilitaryNerfing__/prototypes/heavywater")
+end
 if mods["bobwarfare"] then
     require("__MilitaryNerfing__/prototypes/bobwdata")
     --require("__MilitaryNerfing__/prototypes/mortar")

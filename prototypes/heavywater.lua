@@ -49,10 +49,16 @@ data:extend(
                     icon_size = 64,
                 },
                 {
+                    icon =  data.raw["fluid"]["water"].icon,
+                    icon_size = data.raw["fluid"]["water"].icon_size,
+                    scale = 7 / 16,
+                    shift = {-12, -11},
+                },
+                {
                     icon =  data.raw["fluid"]["bob-pure-water"].icon,
                     icon_size = data.raw["fluid"]["bob-pure-water"].icon_size,
                     scale = 7 / 16,
-                    shift = {-12, 10},
+                    shift = {-12, 14},
                 },
                 {
                     icon = "__MilitaryNerfing__/graphics/icons/fluid-droplet-dirty-water.png",
@@ -67,8 +73,10 @@ data:extend(
                     shift = {16, -12},
                 }
             },
-            energy_required = 80,
+            energy_required = 96,
             category = "advanced-chemistry",
+            allow_consumption = false,
+            allow_speed = false,
             enabled = false,
             subgroup = "fluid",
             ingredients = {
@@ -109,7 +117,7 @@ data:extend(
                     shift = {17, 12},
                 },
             },
-            energy_required = 10,
+            energy_required = 12,
             category = "bob-distillery",
             enabled = false,
             ingredients = {
