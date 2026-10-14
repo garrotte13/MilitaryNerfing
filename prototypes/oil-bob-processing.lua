@@ -18,13 +18,13 @@ r.results = {  --125 total (residue is 5 solid units to 30 fluid)
     { amount = 40, name = "bob-liquid-fuel", type = "fluid" },
     { amount = 35, name = "light-oil", type = "fluid" },
     { amount_min = 3, amount_max = 5, name = "oil-residue", type = "item", ignored_by_productivity = 5 },
-    { amount_min = 1, amount_max = 2, name = "sulfur", type = "item", ignored_by_productivity = 2 }
+    { amount_min = 1, amount_max = 2, name = "sulfur", type = "item", probability=.7, ignored_by_productivity = 2 }
 }
 
 local r = table.deepcopy(data.raw.recipe["basic-oil-processing"])
 r.name = "vacuum-distillation"
 r.ingredients = {
-    { amount = 36, name = "oil-residue", type = "item" }  -- (residue is 20->2 carbon + 25 solid units to 100 fluid )
+    { amount = 38, name = "oil-residue", type = "item" }  -- (residue is 20->2 carbon + 25 solid units to 100 fluid )
 }
 r.results = {  -- total 90
     { amount = 30, name = "heavy-oil", type = "fluid" },
@@ -54,7 +54,7 @@ if r then
     }
     r.results = {
         { amount = 40, name = "petroleum-gas", type = "fluid" },
-        { amount_min = 1, amount_max = 2, name = "sulfur", type = "item" }
+        { amount = 1, name = "sulfur", type = "item" }
     }
     r.energy_required = 3
 end
@@ -71,7 +71,7 @@ r.results = { --125 total (residue is 5 solid units to 30 fluid)
     { amount = 20, name = "bob-liquid-fuel", type = "fluid" },
     { amount = 55, name = "light-oil", type = "fluid" },
     { amount_min = 3, amount_max = 4, name = "oil-residue", type = "item", ignored_by_productivity = 4 },
-    { amount_min = 1, amount_max = 2, name = "sulfur", type = "item", ignored_by_productivity = 2 }
+    { amount_min = 1, amount_max = 2, name = "sulfur", type = "item", probability=.6, ignored_by_productivity = 2 }
 }
 
 r = table.deepcopy(data.raw.recipe["heavy-oil-cracking"])
@@ -79,6 +79,38 @@ r.name = "liquid-fuel-cracking"
 r.ingredients = {
     {type = "fluid", name = "bob-liquid-fuel", amount = 40},
     {type = "fluid", name = "water", amount = 30}
+}
+--r.icon = nil
+--r.icon_size = nil
+r.icons = {
+    {
+        icon = "__MilitaryNerfing__/graphics/icons/Recipe-Backing.png",
+        icon_size = 64,
+    },
+    {
+        icon = "__base__/graphics/icons/fluid/water.png",
+        --icon_size = data.raw["fluid"]["water"].icon_size,
+        scale = 6 / 16,
+        shift = {-10, -10},
+    },
+    {
+        icon = "__MilitaryNerfing__/graphics/icons/fluid-droplet-diesel.png",
+        icon_size = 64,
+        scale = 11 / 16,
+        shift = {8, -10},
+    },
+    {
+        icon = data.raw["fluid"]["petroleum-gas"].icon,
+        icon_size = data.raw["fluid"]["petroleum-gas"].icon_size,
+        scale = 8 / 16,
+        shift = {-11, 14},
+    },
+    {
+        icon = data.raw["fluid"]["light-oil"].icon,
+        icon_size = data.raw["fluid"]["light-oil"].icon_size,
+        scale = 8 / 16,
+        shift = {9, 14},
+    }
 }
 r.results = {
     { amount = 20, name = "petroleum-gas", type = "fluid" },
@@ -133,7 +165,7 @@ r.results = {
     { amount = 45, name = "bob-liquid-fuel", type = "fluid" },
     { amount = 35, name = "bob-carbon-dioxide", type = "fluid" },
     { amount_min = 3, amount_max = 7, name = "oil-residue", type = "item", ignored_by_productivity = 7 },
-    { amount_min = 2, amount_max = 3, name = "sulfur", type = "item", ignored_by_productivity = 3 }
+    { amount_min = 1, amount_max = 3, name = "sulfur", type = "item", ignored_by_productivity = 3 }
 }
 
 r = data.raw.recipe["bob-polishing-compound"]

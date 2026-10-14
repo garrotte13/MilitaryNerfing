@@ -201,7 +201,7 @@ if mods["bobplates"] then
     if r then
         r.main_product = "carbon"
         r.energy_required = 4
-        table.insert(r.results, {type = "item", name = "sulfur", amount = 1, probability=.1, ignored_by_productivity = 1})
+        table.insert(r.results, {type = "item", name = "sulfur", amount = 1, probability=.08, ignored_by_productivity = 1})
         for i, component in pairs(r.ingredients) do
             if component.name == "water" then
                 component.amount = 30
@@ -337,8 +337,19 @@ if r and data.raw.recipe["kr-advanced-chemical-plant"] then
     data.raw.fluid["bob-sulfuric-nitric-acid"].hidden = true
 end
 
-if data.raw.recipe["kr-advanced-chemical-plant"] then
-    require("__MilitaryNerfing__/prototypes/heavywater")
+if data.raw.recipe["low-enrich-heavy-water-mn"] then
+    r = table.deepcopy(data.raw.recipe["void-bob-hydrogen-sulfide"])
+    r.name = "void-GS-depleted-water-mn"
+    r.order = "GS-depleted-water-mn"
+    r.localised_name = { "recipe-name.bob-void", "GS-depleted-water-mn" }
+    r.icons = {
+        { icon = "__bobplates__/graphics/icons/void.png", icon_size = 64 },
+        { icon = "__MilitaryNerfing__/graphics/icons/fluid-droplet-dirty-water.png", icon_size = 64, scale = 0.5}
+    }
+    r.ingredients = {
+        { amount = 25, name = "GS-depleted-water-mn", type = "fluid" }
+    }
+    data:extend({r})
 end
 
 if data.raw.recipe["bob-electric-chemical-mixing-furnace"] and data.raw.recipe["bob-electric-mixing-furnace"] and
@@ -386,4 +397,10 @@ if r then
         end        
     end
 
+end
+
+r = data.raw["furnace"]["bob-void-pump"]
+if r then
+    r.energy_source.emissions_per_minute.pollution = 0.5
+    r.energy_usage = "50kW"
 end

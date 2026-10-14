@@ -8,6 +8,7 @@ if mods["angelspetrochemgraphics"] then
     data.raw.recipe["bob-sodium-chlorate"].icon = "__angelspetrochemgraphics__/graphics/icons/solid-sodium-chlorate.png"
     data.raw.item["bob-sodium-hydroxide"].icon = "__angelspetrochemgraphics__/graphics/icons/solid-sodium-hydroxide.png"
     data.raw.item["bob-sodium-hydroxide"].icon_size = 32
+    data.raw.item["bob-sodium-hydroxide"].icons = nil
 --    data.raw.item["coke"].icon = "__angelspetrochemgraphics__/graphics/icons/solid-coke.png"
  --   data.raw.item["coke"].icon_size = 32
 end
@@ -23,8 +24,9 @@ if mods["bobplates"] and mods["bobrevamp"] and (settings.startup["bobmods-revamp
     data.raw.recipe["bob-solid-fuel-from-sour-gas"].hidden = true
     data.raw.recipe["solid-fuel-from-heavy-oil"].hidden = true
     data.raw.recipe["bob-liquid-fuel"].hidden = true
-    data.raw.fluid["bob-liquid-fuel"].icon = "__MilitaryNerfing__/graphics/icons/raw-fuel-oil.png"
-    data.raw.fluid["bob-liquid-fuel"].icon_size = 32
-    data.raw.recipe["bob-liquid-fuel"].icon = "__MilitaryNerfing__/graphics/icons/raw-fuel-oil.png"
-    data.raw.recipe["bob-liquid-fuel"].icon_size = 32
+    data.raw.fluid["bob-liquid-fuel"].icon = "__MilitaryNerfing__/graphics/icons/fluid-droplet-diesel.png"
+    data.raw.fluid["bob-liquid-fuel"].icon_size = 64
+    data.raw.fluid["bob-liquid-fuel"].icons = nil
+    data.raw.recipe["bob-liquid-fuel"].icon = "__MilitaryNerfing__/graphics/icons/fluid-droplet-diesel.png"
+    data.raw.recipe["bob-liquid-fuel"].icon_size = 64
 end
